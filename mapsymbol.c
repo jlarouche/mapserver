@@ -291,6 +291,7 @@ void writeSymbol(symbolObj *s, FILE *stream)
 
   fprintf(stream, "  SYMBOL\n");
   if(s->name != NULL) fprintf(stream, "    NAME \"%s\"\n", s->name);
+  if(s->anchorpoint_x != -1 && s->anchorpoint_y != -1 ) fprintf(stream, "    ANCHORPOINT %g %g\n", s->anchorpoint_x, s->anchorpoint_y);
 
   switch (s->type) {
     case(MS_SYMBOL_HATCH):

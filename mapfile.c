@@ -755,6 +755,7 @@ static void writeJoin(FILE *stream, int indent, joinObj *join)
   writeString(stream, indent, "TABLE", NULL, join->table);
   writeString(stream, indent, "TEMPLATE", NULL, join->template);
   writeString(stream, indent, "TO", NULL, join->to);
+  writeString(stream, indent, "CONNECTION", NULL, join->connection);
   writeKeyword(stream, indent, "CONNECTIONTYPE", join->connectiontype, 3, MS_DB_CSV, "CSV", MS_DB_POSTGRES, "POSTRESQL", MS_DB_MYSQL, "MYSQL");
   writeKeyword(stream, indent, "TYPE", join->type, 1, MS_JOIN_ONE_TO_MANY, "ONE-TO-MANY");
   writeBlockEnd(stream, indent, "JOIN");
@@ -2095,7 +2096,7 @@ static void writeLabel(FILE *stream, int indent, labelObj *label)
     else writeNumber(stream, indent, "SIZE", -1, label->size);
   }
 
-  writeKeyword(stream, indent, "ALIGN", label->align, MS_ALIGN_CENTER, "CENTER", MS_ALIGN_RIGHT, "RIGHT");
+  writeKeyword(stream, indent, "ALIGN", label->align, 2, MS_ALIGN_CENTER, "CENTER", MS_ALIGN_RIGHT, "RIGHT");
   writeNumber(stream, indent, "BUFFER", 0, label->buffer);
 
   if(label->numbindings > 0 && label->bindings[MS_LABEL_BINDING_COLOR].item)
@@ -4693,7 +4694,7 @@ static void writeOutputformatobject(FILE *stream, int indent, outputFormatObj *o
   writeString(stream, indent, "DRIVER", NULL, outputformat->driver);
   writeString(stream, indent, "EXTENSION", NULL, outputformat->extension);
   writeKeyword(stream, indent, "IMAGEMODE", outputformat->imagemode, 7, MS_IMAGEMODE_PC256, "PC256", MS_IMAGEMODE_RGB, "RGB", MS_IMAGEMODE_RGBA, "RGBA", MS_IMAGEMODE_INT16, "INT16", MS_IMAGEMODE_FLOAT32, "FLOAT32", MS_IMAGEMODE_BYTE, "BYTE", MS_IMAGEMODE_FEATURE, "FEATURE");
-  writeKeyword(stream, indent, "TRANSPARENT", outputformat->transparent, 2, MS_TRUE, "TRUE", MS_FALSE, "FALSE");
+  writeKeyword(stream, indent, "TRANSPARENT", outputformat->transparent, 2, MS_ON, "ON", MS_OFF, "OFF");
   for (i=0; i<outputformat->numformatoptions; i++)
     writeString(stream, indent, "FORMATOPTION", NULL, outputformat->formatoptions[i]);
   writeBlockEnd(stream, indent, "OUTPUTFORMAT");
@@ -4849,7 +4850,7 @@ static void writeLegend(FILE *stream, int indent, legendObj *legend)
   if(legend->status == MS_EMBED) writeKeyword(stream, indent, "POSITION", legend->position, 6, MS_LL, "LL", MS_UL, "UL", MS_UR, "UR", MS_LR, "LR", MS_UC, "UC", MS_LC, "LC");
   writeKeyword(stream, indent, "POSTLABELCACHE", legend->postlabelcache, 1, MS_TRUE, "TRUE");
   writeKeyword(stream, indent, "STATUS", legend->status, 3, MS_ON, "ON", MS_OFF, "OFF", MS_EMBED, "EMBED");
-  writeKeyword(stream, indent, "TRANSPARENT", legend->transparent, 2, MS_TRUE, "TRUE", MS_FALSE, "FALSE");
+  writeKeyword(stream, indent, "TRANSPARENT", legend->transparent, 2, MS_ON, "ON", MS_OFF, "OFF");
   writeString(stream, indent, "TEMPLATE", NULL, legend->template);
   writeBlockEnd(stream, indent, "LEGEND");
   writeLineFeed(stream);
@@ -5000,7 +5001,7 @@ static void writeScalebar(FILE *stream, int indent, scalebarObj *scalebar)
   writeDimension(stream, indent, "SIZE", scalebar->width, scalebar->height, NULL, NULL);
   writeKeyword(stream, indent, "STATUS", scalebar->status, 3, MS_ON, "ON", MS_OFF, "OFF", MS_EMBED, "EMBED");
   writeNumber(stream, indent, "STYLE", 0, scalebar->style);
-  writeKeyword(stream, indent, "TRANSPARENT", scalebar->transparent, 2, MS_TRUE, "TRUE", MS_FALSE, "FALSE");
+  writeKeyword(stream, indent, "TRANSPARENT", scalebar->transparent, 2, MS_ON, "ON", MS_OFF, "OFF");
   writeKeyword(stream, indent, "UNITS", scalebar->units, 6, MS_INCHES, "INCHES", MS_FEET ,"FEET", MS_MILES, "MILES", MS_METERS, "METERS", MS_KILOMETERS, "KILOMETERS", MS_NAUTICALMILES, "NAUTICALMILES");
   writeBlockEnd(stream, indent, "SCALEBAR");
   writeLineFeed(stream);
@@ -5592,6 +5593,7 @@ int msSaveMap(mapObj *map, char *filename)
   }
 
   writeBlockBegin(stream, indent, "MAP");
+  writeNumber(stream, indent, "ANGLE", 0, map->gt.rotation_angle);
   writeHashTableInline(stream, indent, "CONFIG", &(map->configoptions));
   writeString(stream, indent, "DATAPATTERN", NULL, map->datapattern); /* depricated */
   writeNumber(stream, indent, "DEBUG", 0, map->debug);
@@ -5605,12 +5607,13 @@ int msSaveMap(mapObj *map, char *filename)
   writeNumber(stream, indent, "MAXSIZE", MS_MAXIMAGESIZE_DEFAULT, map->maxsize);
   writeString(stream, indent, "NAME", NULL, map->name);
   writeNumber(stream, indent, "RESOLUTION", 72.0, map->resolution);
+  writeNumber(stream, indent, "SCALEDENOM", -1, map->scaledenom);
   writeString(stream, indent, "SHAPEPATH", NULL, map->shapepath);
   writeDimension(stream, indent, "SIZE", map->width, map->height, NULL, NULL);
   writeKeyword(stream, indent, "STATUS", map->status, 2, MS_ON, "ON", MS_OFF, "OFF");
   writeString(stream, indent, "SYMBOLSET", NULL, map->symbolset.filename);
   writeString(stream, indent, "TEMPLATEPATTERN", NULL, map->templatepattern); /* depricated */
-  writeKeyword(stream, indent, "TRANSPARENT", map->transparent, 2, MS_TRUE, "TRUE", MS_FALSE, "FALSE");
+  writeKeyword(stream, indent, "TRANSPARENT", map->transparent, 2, MS_ON, "ON", MS_OFF, "OFF");
   writeKeyword(stream, indent, "UNITS", map->units, 7, MS_INCHES, "INCHES", MS_FEET ,"FEET", MS_MILES, "MILES", MS_METERS, "METERS", MS_KILOMETERS, "KILOMETERS", MS_NAUTICALMILES, "NAUTICALMILES", MS_DD, "DD");
   writeLineFeed(stream);
 
