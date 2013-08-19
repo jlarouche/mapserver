@@ -95,7 +95,7 @@ static int msOWSPreParseRequest(cgiRequestObj *request,
                                 owsRequestObj *ows_request)
 {
   /* decide if KVP or XML */
-  if (request->type == MS_GET_REQUEST || (request->type == MS_POST_REQUEST 
+  if (request->type == MS_GET_REQUEST || (request->type == MS_POST_REQUEST
     && request->contenttype && strncmp(request->contenttype, "application/x-www-form-urlencoded", strlen("application/x-www-form-urlencoded")) == 0)) {
     int i;
     /* parse KVP parameters service, version and request */
@@ -294,7 +294,7 @@ int msOWSDispatch(mapObj *map, cgiRequestObj *request, int ows_mode)
 int msOWSIpParse(const char* ip, unsigned char* ip1, unsigned char* mask)
 {
   int len = 0, masklen, seps;
-  
+
   if (msCountChars((char*)ip, '.') == 3) {
     /* ipv4 */
     unsigned char* val = ip1;
@@ -316,7 +316,7 @@ int msOWSIpParse(const char* ip, unsigned char* ip1, unsigned char* mask)
           masklen = 32;
         break;
       }
-      else 
+      else
         break;
       ++ip;
     }
@@ -458,7 +458,7 @@ int msOWSIpInMetadata(const char *ip_list, const char* ip)
   FILE *stream;
   char buffer[MS_BUFFER_LENGTH];
   int found = MS_FALSE;
-  
+
   if (strncasecmp(ip_list, "file:", 5) == 0) {
     stream = fopen(ip_list + 5, "r");
     if(stream) {
@@ -470,12 +470,12 @@ int msOWSIpInMetadata(const char *ip_list, const char* ip)
         }
       }
       fclose(stream);
-    }  
+    }
   }
   else {
     if(msOWSIpInList(ip_list, ip))
       found = MS_TRUE;
-  }  
+  }
   return found;
 }
 
@@ -557,7 +557,7 @@ int msOWSRequestIsEnabled(mapObj *map, layerObj *layer,
       return MS_FALSE;
   }
 
-  if (map && check_all_layers == MS_FALSE) {
+  if (map && (check_all_layers == MS_FALSE || map->numlayers == 0)) {
     /* then we check in the map metadata */
     enable_request = msOWSLookupMetadata(&map->web.metadata, namespaces, "enable_request");
     if (msOWSParseRequestMetadata(enable_request, request, &disabled))
@@ -1350,7 +1350,7 @@ int msOWSPrintInspireCommonLanguages(FILE *stream, mapObj *map, const char *name
                  "</inspire_common:Language></inspire_common:DefaultLanguage>\n",
                  buffer = msEncodeHTMLEntities(default_language));
     msFree(buffer);
-    
+
     /* append _exclude to our default_language*/
     default_language = msSmallRealloc(default_language,strlen(default_language)+strlen("_exclude")+1);
     strcat(default_language,"_exclude");
